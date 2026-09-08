@@ -15,7 +15,7 @@ pipeline {
             steps {
                 sh 'docker rm -f test-nginx-container || true'
                 sh 'docker run -d -p 8081:80 --name test-nginx-container my-nginx-image'
-                sh 'curl -I http://localhost:8081'
+                sh 'docker exec test-nginx-container curl -I http://localhost'
             }
         }
     }
