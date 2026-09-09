@@ -13,7 +13,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 script {
-                    def app = docker.build("${env.IMAGE_NAME}")
+                    docker.build("${env.IMAGE_NAME}")
                 }
             }
         }
@@ -28,8 +28,9 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://ghcr.io', 'jenkins-credentials-id-new') {
-                        app.push("latest")
-                        app.push("version-${env.BUILD_ID}")
+                        // N-stamlou sh push direct b el-nom mtaç el-image
+                        sh "docker push ${env.IMAGE_NAME}:latest"
+                        sh "docker push ${env.IMAGE_NAME}:version-${env.BUILD_ID}"
                     }
                 }
             }
