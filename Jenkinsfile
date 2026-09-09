@@ -13,14 +13,15 @@ pipeline {
         stage('Docker Build') {
             steps {
                 script {
-                    docker.build("${env.IMAGE_NAME}")
+                    // N-buildiw el-image b el-latest w n-taggiwiha m-baɛd
+                    sh "docker build -t ${env.IMAGE_NAME}:latest -t ${env.IMAGE_NAME}:version-${env.BUILD_ID} ."
                 }
             }
         }
         stage('Docker Run & Test') {
             steps {
                 sh 'docker rm -f test-nginx-container || true'
-                sh "docker run -d -p 8081:80 --name test-nginx-container ${env.IMAGE_NAME}"
+                sh "docker run -d -p 8081:80 --name test-nginx-container ${env.IMAGE_NAME}:latest"
                 sh 'docker exec test-nginx-container curl -I http://localhost'
             }
         }
@@ -28,7 +29,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://ghcr.io', 'jenkins-credentials-id-new') {
-                        // N-stamlou sh push direct b el-nom mtaç el-image
+                        // Tawa el-tags el-zouj mawjoudin w y-t-poussyiw b-najaħ
                         sh "docker push ${env.IMAGE_NAME}:latest"
                         sh "docker push ${env.IMAGE_NAME}:version-${env.BUILD_ID}"
                     }
