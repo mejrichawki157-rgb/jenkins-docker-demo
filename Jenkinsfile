@@ -1,7 +1,6 @@
 pipeline {
     agent any
     environment {
-        // L'URL mtaç GitHub Packages (GHCR) w esm el-compte mte3ek
         REGISTRY_URL = 'ghcr.io/mejrichawki157-rgb'
         IMAGE_NAME = "${env.REGISTRY_URL}/jenkins-docker-demo"
     }
@@ -14,7 +13,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 script {
-                    app = docker.build("${env.IMAGE_NAME}")
+                    def app = docker.build("${env.IMAGE_NAME}")
                 }
             }
         }
@@ -28,7 +27,6 @@ pipeline {
         stage('Docker Push') {
             steps {
                 script {
-                    // Stimaalat credentials jdida elli aamalnaha fel Jenkins
                     docker.withRegistry('https://ghcr.io', 'jenkins-credentials-id-new') {
                         app.push("latest")
                         app.push("version-${env.BUILD_ID}")
